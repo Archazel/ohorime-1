@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodemon index.js",
+    "start": "node index.js"
   },
   "author": "shaynlink <me@shaynlink.fr> (https://ohori.me)",
   "license": "MIT",
@@ -15,5 +16,8 @@
     "kobu-lib": "github:ohorime/kobu-lib",
     "mongoose": "^5.10.11",
     "ws": "^7.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

@@ -6,4 +6,4 @@ const client = new Ohorime();
 client.loadEvents('./src/events');
 client.loadPlugins('./src/plugins');
 
-client.connect(require('./../config').token);
+client.start(require('./../config').token);

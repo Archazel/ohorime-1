@@ -1,9 +1,7 @@
 'use strict';
 
 const Events = require('./../structures/Events');
-const erlpack = require('erlpack');
 const mongoose = require('mongoose');
-const messageCreate = require('./messageCreate');
 
 class GuildCreate extends Events{
   constructor(client) {
@@ -27,7 +25,7 @@ class GuildCreate extends Events{
       });
     });
 
-    this.client.redis.socket.set(`guild_${guild.id}`, erlpack.pack(guild));
+    this.client.redis.socket.set(`guild_${guild.id}`, JSON.stringify(guild));
   };
 };
 

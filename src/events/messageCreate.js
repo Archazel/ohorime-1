@@ -4,6 +4,7 @@ const Events = require('../structures/Events');
 const mongoose = require('mongoose');
 const BitField = require('../util/BitField');
 const {ChannelNode} = require('kobu-lib');
+const {flags: {PERMISSION, MESSAGE, PLUGINS}} = require('./../util/Constant');
 
 class Message extends Events {
   constructor(client) {
@@ -11,9 +12,15 @@ class Message extends Events {
   };
 
   async handle(message) {
-    message.bitfield = new BitField(message.flags, this.client.flags.MESSAGE);
+    console.log(message);
 
-    if (message.author.bot || message.bitfield.resolve().includes('URGENT')) return;
+    message.guild = await this.client.redis.socket.get(`guild_${message.guild_id}`).then(JSON.parse);
+
+    console.log(message.guild);
+
+    message.bitfield = new BitField(message.flags, MESSAGE);
+
+    if (message.author.bot || message.bitfield.has('URGENT')) return;
 
     message.db = {};
 
@@ -28,7 +35,7 @@ class Message extends Events {
 
     message.db.guild = await mongoose.model('Guilds').findOne({id: message.guild_id});
 
-    message.db.guild.bitfield = new BitField(message.db.guild.plugins, this.client.flags.PLUGINS);
+    message.db.guild.bitfield = new BitField(message.db.guild.plugins, PLUGINS);
 
     if (!message.content.startsWith('o!')) return;
 
@@ -39,9 +46,7 @@ class Message extends Events {
     
     if (!plugin) return console.log('Plugins not found');
 
-    const flags = message.db.guild.bitfield.resolve().map((v) => v.toLowerCase());
-
-    if (!flags.includes(plugin.name) && plugin.name != 'default'){
+    if (plugin.name != 'default' && !message.db.guild.bitfield.has(plugin.name.toUpperCase())){
       return new ChannelNode(this.client)
       .createMessage(message.channel_id, {
         data: {

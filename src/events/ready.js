@@ -12,7 +12,7 @@ class Ready extends Events{
     this.client.shard = ctx.shard;
     this.client.application = ctx.application;
 
-    this.client.redis.socket.set('user', erlpack.pack(ctx.user));
+    this.client.redis.socket.set('user', JSON.stringify(ctx.user));
 
     console.log('[*] %s connected', ctx.user.username);
   };

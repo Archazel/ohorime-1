@@ -1,7 +1,6 @@
 'use strict';
 
 const Events = require('./../structures/Events');
-const erlpack = require('erlpack');
 
 class GuildUpdate extends Events{
   constructor(client) {
@@ -9,7 +8,7 @@ class GuildUpdate extends Events{
   };
 
   handle(guild) {
-    this.client.redis.socket.set(`guild_${guild.id}`, erlpack.pack(guild));
+    this.client.redis.socket.set(`guild_${guild.id}`, JSON.stringify(guild));
   };
 };
 

@@ -7,21 +7,23 @@ class BitField {
     this.flags = flags;
   };
 
-  resolve(bit = this.bit, field = []) {
-    if (Array.isArray(bit)) return this.resolve(bit.reduce((a, b) => a | b), []);
-    if (bit <= 0) return field;
-    let find = false;
-    let i = 0;
-    const entries = Object.entries(this.flags);
-    let calc;
-    while(!find) {
-      calc = entries[entries.length-1-i];
-      if ((bit - calc[1]) >= 0) {
-        find = true;
-      } else i++;
+  parse(bit = this.bit) {
+    if (Array.isArray(bit)) return bit.reduce((a, b) => a | b);
+    else return bit;
+  };
+
+  resolve(bit = this.bit) {
+    bit = this.parse(bit);
+    const flags = {};
+    for (const [key, value] of Object.entries(this.flags)) {
+      flags[key] = (bit & value) == value 
     };
-    field.push(calc[0]);
-    return this.resolve(bit - calc[1], field);
+    return flags;
+  };
+
+  has(flag = 0, bit = this.bit) {
+    bit = this.parse(bit);
+    return (bit & flag) == flag;
   };
 };
 
@@ -37,4 +39,9 @@ const myFlags1 = new BitField((flags.a | flags.c | flags.e), flags);
 const myFlags2 = new BitField([flags.a, flags.b, flags.c], flags);
 const myFlags3 = new BitField((flags.a | flags.b | flags.c | flags.d | flags.e), flags);
 
-console.log(myFlags1.resolve(), myFlags2.resolve(), myFlags3.resolve());
+console.log(myFlags1.resolve());
+console.log(myFlags2.resolve());
+console.log(myFlags3.resolve());
+
+console.log(myFlags1.has(flags.a));
+console.log(myFlags1.has(flags.b));

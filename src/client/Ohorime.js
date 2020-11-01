@@ -22,30 +22,11 @@ class Ohorime extends Client {
 
     this.mongoDB = new MongoDB();
 
-    this.mongoDB.connect();
-
     this.redis = new Redis();
-
-    this.redis.connect();
 
     this.shard;
     this.application;
 
-    this.flags = {
-      MESSAGE: {
-        CROSSPOSTED: 1 << 0,
-        IS_CROSSPOSTED: 1 << 1,
-        SUPRESS_EMBEDS: 1 << 2,
-        SOURCE_MESSAGE_DELETED: 1 << 3,
-        URGENT: 1 << 4,
-      },
-      PLUGINS: {
-        MODERATION: 1 << 0,
-        SOCIAL: 1 << 1,
-        MUSIC: 1 << 2,
-        LEVELING: 1 << 3,
-      },
-    };
   };
 
   loadPlugins(path) {
@@ -75,12 +56,12 @@ class Ohorime extends Client {
     };
   };
 
-  start() {
+  start(token) {
     this.mongoDB.connect().then(() => {
       console.log('[*] Connected to mongoDB');
       this.redis.connect().then(() => {
         console.log('[*] Connected to redis');
-        this.connect();
+        this.connect(token);
       }).catch(() => {
         throw Error('Connection impossible to redis');
       });
