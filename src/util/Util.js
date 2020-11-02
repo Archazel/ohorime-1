@@ -10,58 +10,60 @@ class Util {
     return kio;
   };
 
-  static compute_base_permission(member, guild) {
-    if (guild.owner_id == member.id) return flags.PERMISSION_ALL;
-
-    const role_everyone = guild.roles.find((role) => role.name == '@everyone'); // get @everyone role
-    let permissions = role_everyone.permissions;
+  static computeBasePermissions(member, guild) {
+    if (member.id == guild.owner_id) return flags.PERMISSION_ALL;
     
-    for (const role in member.roles) {
+    const role_everyone = guild.roles.find((role) => role.name == '@everyone');
+    let permissions = role_everyone.permissions;
+
+    for (let role of member.roles) {
+      role = guild.roles.find((_role) => _role.id == role);
       permissions |= role.permissions;
     };
 
-    if (permissions & flags.PERMISSION.ADMINISTRATOR) return flags.PERMISSION_ALL;
+    if ((permissions & flags.ADMINISTRATOR) == flags.ADMINISTRATOR) return flags.PERMISSION_ALL;
 
-    return {permissions, role_everyone};
+    return permissions;
   };
+  
+  static computeOverwrites(basePermissions, member, guild, channel) {
+    if ((basePermissions & flags.ADMINISTRATOR) == flags.ADMINISTRATOR) return flags.PERMISSION_ALL;
 
-  static compute_overwrites(base_permissions, member, channel, everyone_id) {
-    if ((base_permissions & flags.PERMISSION.ADMINISTRATOR) == flags.PERMISSION.ADMINISTRATOR) return flags.PERMISSION_ALL;
-
-    const permissions = base_permissions;
-    const overwrite_everyone = channel.permission_overwrites.find((overwrite) => overwrite.id == everyone_id);
-
+    let permissions = basePermissions;
+    const role_everyone = guild.roles.find((role) => role.name == '@everyone');
+    const overwrite_everyone = channel.permission_overwrites.find((overwrite) => overwrite.id == role_everyone.id);
     if (overwrite_everyone) {
       permissions &= ~overwrite_everyone.deny;
-      permissions |= overwrite_everyone.deny;
+      permissions |= overwrite_everyone.allow;
     };
 
     const overwrites = channel.permission_overwrites;
-    let allow = 0;
-    let deny = 0;
-    for (const role in member.roles) {
-      const overwrite_role = overwrites.find((overwrite) => overwrite.id = role.id);
+    let allow = null;
+    let deny = null;
+    for (const role_id of member.roles) {
+      const overwrite_role = overwrites.find((overwrite) => overwrite.id == role_id);
       if (overwrite_role) {
         allow |= overwrite_role.allow;
         deny |= overwrite_role.deny;
       };
     };
+
     permissions &= ~deny;
     permissions |= allow;
 
-    overwrite_member = overwrites.find((overwrite) => overwrite.id == member.id);
+    const overwrite_member = overwrites.find((overwrite) => overwrite.id == member.id);
 
     if (overwrite_member) {
-      permissions &= ~overwrite_member.deny
-      permissions |= overwrite_member.allow
+      permissions &= ~overwrite_member.deny;
+      permissions |= overwrite_member.allow;
     };
 
     return permissions;
   };
 
-  static compute_permissions(member, guild, channel) {
-    const base_permissions = this.compute_base_permission(member, guild);
-    return this.compute_overwrites(base_permissions.permissions, member, channel, base_permissions.role_everyone.id);
+  static computePermissions(member, guild, channel) {
+    const basePermissions = Util.computeBasePermissions(member, guild);
+    return Util.computeOverwrites(basePermissions, member, guild, channel);
   };
 };
 

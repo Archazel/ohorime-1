@@ -1,7 +1,6 @@
 'use strict';
 
 const Events = require('./../structures/Events');
-const erlpack = require('erlpack');
 
 class Ready extends Events{
   constructor(client) {
@@ -14,7 +13,7 @@ class Ready extends Events{
 
     this.client.redis.socket.set('user', JSON.stringify(ctx.user));
 
-    console.log('[*] %s connected', ctx.user.username);
+    console.log('[*] %s connected | shard %s/%s', ctx.user.username, parseInt(process.env.shardID)+1, process.env.shardCount);
   };
 };
 

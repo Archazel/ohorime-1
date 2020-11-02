@@ -5,7 +5,10 @@ const {ChannelNode} = require('kobu-lib');
 
 class Ping extends Commands {
   constructor(client) {
-    super(client, 'ping', {});
+    super(client, 'ping', {
+      memberPermissions: [],
+      mePermissions: ['SEND_MESSAGES', 'EMBED_LINK'],
+    });
   };
 
   handle(message, args) {

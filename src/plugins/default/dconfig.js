@@ -5,7 +5,10 @@ const {ChannelNode} = require('kobu-lib');
 
 class Config extends Commands {
   constructor(client) {
-    super(client, 'config', {});
+    super(client, 'config', {
+      memberPermissions: [],
+      mePermissions: ['SEND_MESSAGES', 'EMBED_LINK'],
+    });
   };
 
   handle(message, args) {
@@ -13,7 +16,8 @@ class Config extends Commands {
     if (!args.join('')) return channel.createMessage(message.channel_id, {
       data: {
         embed: {
-          description: 'personal commands: `color`, `background`, `prefix`',
+          description: `Personal commands: \`color\`, \`background\`, \`prefix\`${message.member.bitfield.has('MANAGE_GUILD') ? '\nGuild commands: `plugins`' : ''}`,
+          color: parseInt('0x' + message.db.user.color) || 0x00
         },
       },
     });
