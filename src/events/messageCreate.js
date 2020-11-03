@@ -82,14 +82,14 @@ class Message extends Events {
 
     if (!message.me.bitfield.has('ADMINISTRATOR')) {
       let missing = [];
-      for (const perm in cmd.mePermissions) {
+      for (const perm of cmd.data.mePermissions) {
         if (!message.me.bitfield.has(perm)) missing.push(perm.toLowerCase());
       };
 
       if (missing.length > 0) {
         const msg = `Bot missing permissions: \`${missing.join('`, `')}\``;
         return channelNode.createMessage(message.channel_id, {
-          data: message.me.bitfield.has('EMBED_LINKS') ? 
+          data: !message.me.bitfield.has('EMBED_LINKS') ? 
           {
             content: msg,
           } : {
@@ -104,14 +104,17 @@ class Message extends Events {
 
     if (!message.member.bitfield.has('ADMINISTRATOR')) {
       let missing = [];
-      for (const perm in cmd.memberPermissions) {
+      for (const perm of cmd.data.memberPermissions) {
+        console.log(perm, message.member.bitfield.has(perm));
         if (!message.member.bitfield.has(perm)) missing.push(perm.toLowerCase());
       };
+
+      console.log(missing);
 
       if (missing.length > 0) {
         const msg = `You missing permissions: \`${missing.join('`, `')}\``;
         return channelNode.createMessage(message.channel_id, {
-          data: message.me.bitfield.has('EMBED_LINKS') ?
+          data: !message.me.bitfield.has('EMBED_LINKS') ?
           {
             content: msg,
           } : {

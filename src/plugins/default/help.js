@@ -7,7 +7,7 @@ class Help extends Commands {
   constructor(client) {
     super(client, 'help', {
       memberPermissions: [],
-      mePermissions: ['SEND_MESSAGES', 'EMBED_LINK'],
+      mePermissions: ['SEND_MESSAGES', 'EMBED_LINKS'],
     });
   };
 

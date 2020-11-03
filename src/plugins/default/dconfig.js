@@ -10,7 +10,7 @@ class Config extends Commands {
   constructor(client) {
     super(client, 'config', {
       memberPermissions: [],
-      mePermissions: ['SEND_MESSAGES', 'EMBED_LINK'],
+      mePermissions: ['SEND_MESSAGES', 'EMBED_LINKS'],
     });
 
     this.color = [

@@ -7,7 +7,7 @@ class Ping extends Commands {
   constructor(client) {
     super(client, 'ping', {
       memberPermissions: [],
-      mePermissions: ['SEND_MESSAGES', 'EMBED_LINK'],
+      mePermissions: ['SEND_MESSAGES', 'EMBED_LINKS'],
     });
   };
 
