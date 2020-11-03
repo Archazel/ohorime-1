@@ -95,7 +95,7 @@ class Message extends Events {
           } : {
             embed: {
               description: msg,
-              color: parseInt('0x' + message.db.color) || 0x00,
+              color: parseInt('0x' + message.db.user.color) || 0x00,
             }
           },
         });

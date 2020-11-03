@@ -7,6 +7,8 @@ class MongoDB {
   constructor(client) {
     this.client = client;
 
+    mongoose.set('useFindAndModify', true);
+
     for (const [name, schema] of Object.entries(schemas)) {
       try {
         mongoose.model(name, schema);
