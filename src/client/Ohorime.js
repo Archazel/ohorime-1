@@ -7,15 +7,18 @@ const MongoDB = require('./../database/mongodb');
 const Redis = require('./../database/redis');
 const {resolve} = require('path');
 const Collection = require('@discordjs/collection');
+const axios = require('axios');
 
 class Ohorime extends Client {
   constructor() {
     /**
      * 1 << 0 GUILDS
      * 1 << 9 GUILD_MESSAGES
+     * 1 << 1 GUILDS_MEMBERS
+     * 1 << 8 GUILD_PRESENCES 
      */
     super({
-      intents: 1 << 0 | 1 << 9, 
+      intents: 1 << 0 | 1 << 9 | 1 << 1 | 1 << 8,
     });
 
     this.plugins = new Collection();
@@ -27,6 +30,9 @@ class Ohorime extends Client {
     this.shard;
     this.application;
 
+    this.yokoso = axios.create({
+      baseURL: 'htts://yokoso.ohori.me/images/',
+    });
   };
 
   loadPlugins(path) {

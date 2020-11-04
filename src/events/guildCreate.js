@@ -2,6 +2,7 @@
 
 const Events = require('./../structures/Events');
 const mongoose = require('mongoose');
+const erlpack = require('erlpack');
 
 class GuildCreate extends Events{
   constructor(client) {
@@ -9,6 +10,15 @@ class GuildCreate extends Events{
   };
 
   async handle(guild) {
+    this.client.ws.send(erlpack.pack({
+      op: 8,
+      d: {
+        guild_id: guild.id,
+        query: '',
+        limit: 0,
+      },
+    }));
+
     mongoose.model('Guilds').findOne({id: guild.id}, (err, _guild) => {
       if (Boolean(_guild)) return;
       mongoose.model('Guilds').create({
@@ -17,10 +27,11 @@ class GuildCreate extends Events{
     });
 
     Object.values(guild.members).filter((member) => !member.user.bot).forEach(async (member) => {
-      mongoose.model('Users').findOne({id: member.id}, (err, user) => {
+
+      mongoose.model('Users').findOne({id: member.user.id}, (err, user) => {
         if (user) return;
         mongoose.model('Users').create({
-          id: member.id,
+          id: member.user.id,
         });
       });
     });

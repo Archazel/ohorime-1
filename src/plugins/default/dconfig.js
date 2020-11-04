@@ -50,7 +50,7 @@ class Config extends Commands {
       const color = this.color.find((c) => c.tag == argColor.toLowerCase())?.code || argColor;
 
       return await mongoose.model('Users').findOneAndUpdate({
-        token: message.db.user.token,
+        id: message.db.user.id,
       }, {
         color,
       }).then((old) => {
@@ -125,7 +125,7 @@ class Config extends Commands {
         };
 
         return await mongoose.model('Guilds').findOneAndUpdate({
-          token: message.db.guild.token,
+          id: message.db.guild.id,
         }, {
           plugins: flags,
         }).then((old) => {
@@ -147,7 +147,7 @@ class Config extends Commands {
         };
 
         return await mongoose.model('Guilds').findOneAndUpdate({
-          token: message.db.guild.token,
+          id: message.db.guild.id,
         }, {
           plugins: bitfield.bit,
         }).then((old) => {

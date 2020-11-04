@@ -62,9 +62,9 @@ class Message extends Events {
 
     if (plugin.name != 'default' && !message.db.guild.bitfield.has(plugin.name.toUpperCase())) {
       const msg = `[${
-        plugin.name}] plugins disable, please try \`o!config plugins enable ${plugin.name}\``;
+        plugin.name}] plugins disable, please try \`o!config plugins ${plugin.name} enable\``;
       return channelNode.createMessage(message.channel_id, {
-        data: message.me.bitfield.has('EMBED_LINKS') ? 
+        data: !message.me.bitfield.has('EMBED_LINKS') ? 
         {
           embed: {
             description: msg,
@@ -105,11 +105,8 @@ class Message extends Events {
     if (!message.member.bitfield.has('ADMINISTRATOR')) {
       let missing = [];
       for (const perm of cmd.data.memberPermissions) {
-        console.log(perm, message.member.bitfield.has(perm));
         if (!message.member.bitfield.has(perm)) missing.push(perm.toLowerCase());
       };
-
-      console.log(missing);
 
       if (missing.length > 0) {
         const msg = `You missing permissions: \`${missing.join('`, `')}\``;

@@ -65,6 +65,29 @@ class Util {
     const basePermissions = Util.computeBasePermissions(member, guild);
     return Util.computeOverwrites(basePermissions, member, guild, channel);
   };
+
+  static parseMention(str) {
+    if (!str) return null;
+    if (Array.isArray(str)) str = str.join('');
+    const mentions = [
+      {tag: 'nickname', reg: /<@!(\w{1,20})>/},
+      {tag: 'channel', reg: /<#(\w{1,20})>/},
+      {tag: 'username', reg: /<@(\w{1,20})>/},
+      {tag: 'role', reg: /<@&(\w{1,20})>/},
+      {tag: 'emoji', reg: /<(:a:)?:(\w{1,20}):(\w{1,20})>/},
+    ];
+    
+    let matchs = {};
+    
+    for (const mention of mentions) {
+      if (!matchs[mention.tag]) matchs[mention.tag] = [];
+      if (str.match(mention.reg)) {
+        matchs[mention.tag].push(...str.match(mention.reg));
+      };
+    };
+    
+    return matchs;
+  };
 };
 
 module.exports = exports = Util;

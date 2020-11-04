@@ -10,13 +10,6 @@ module.exports.Guilds = exports.Guilds = new mongoose.Schema({
     index: true,
     unique: true
   },
-  token: {
-    type: String,
-    required: true,
-    index: true,
-    unique: true,
-    default: randomString(24),
-  },
   createdAt: {
     type: String,
     default: Date.now(),
@@ -33,13 +26,6 @@ module.exports.Users = exports.Users = new mongoose.Schema({
     required: true,
     index: true,
     unique: true,
-  },
-  token: {
-    type: String,
-    required: true,
-    index: true,
-    unique: true,
-    default: randomString(24),
   },
   createdAt: {
     type: String,
