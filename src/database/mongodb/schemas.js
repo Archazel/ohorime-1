@@ -39,6 +39,10 @@ module.exports.Users = exports.Users = new mongoose.Schema({
     type: String,
     default: 'C133C8',
   },
+  prefix: {
+    type: String,
+    default: 'o!',
+  },
 });
 
 module.exports.Leveling = exports.Leveling = new mongoose.Schema({

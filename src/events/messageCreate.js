@@ -49,9 +49,9 @@ class Message extends Events {
 
     message.db.guild.bitfield = new BitField(message.db.guild.plugins, PLUGINS);
 
-    if (!message.content.startsWith('o!')) return;
+    if (!message.content.startsWith(message.db.user.prefix)) return;
 
-    const args = message.content.slice(2).trim().split(/ +/g);
+    const args = message.content.slice(message.db.user.prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
     const plugin = this.client.plugins.find((plugin) => plugin.commands.has(command));

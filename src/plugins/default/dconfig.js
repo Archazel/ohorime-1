@@ -25,7 +25,7 @@ class Config extends Commands {
     if (!args.join('')) return channel.createMessage(message.channel_id, {
       data: {
         embed: {
-          description: `Personal commands: \`color\`${enableGuild ? '\nGuild commands: `plugins`' : ''}`,
+          description: `Personal commands: \`color\`, \`prefix\`${enableGuild ? '\nGuild commands: `plugins`' : ''}`,
           color: parseInt('0x' + message.db.user.color) || 0x00
         },
       },
@@ -59,6 +59,32 @@ class Config extends Commands {
             embed: {
               description: `🎊 Color updated ${old.color} -> ${color}`,
               color: parseInt('0x' + color) || 0x00
+            },
+          },
+        });
+      });
+    } else if (setter == 'prefix') {
+      if (!args.join('')) return channel.createMessage(message.channel_id, {
+        data: {
+          embed: {
+            description: 'Please enter a valid prefix',
+            color: parseInt('0x' + message.db.user.color) || 0x00,
+          },
+        },
+      });
+
+      const argPrefix = args.join('').trim();
+
+      return await mongoose.model('Users').findOneAndUpdate({
+        id: message.db.user.id,
+      }, {
+        prefix: argPrefix,
+      }).then((old) => {
+        return channel.createMessage(message.channel_id, {
+          data: {
+            embed: {
+              description: `🎊 Prefix updated ${old.prefix} -> ${argPrefix}`,
+              color: parseInt('0x' + message.db.user.color) || 0x00
             },
           },
         });
