@@ -17,11 +17,11 @@ class Message extends Events {
 
     if (message.author.bot || message.bitfield.has('URGENT')) return;
 
+    message.channel = new ChannelNode(this.client, message.channel_id);
+
     message.member.id = message.author.id;
 
     message.guild = await this.client.redis.socket.get(`guild_${message.guild_id}`).then(JSON.parse);
-
-    message.channel = new ChannelNode(this.client, message.channel_id);
     
     for (const [key, value] of Object.entries(message.guild.channels.find((channel) => channel.id === message.channel_id))) {
       message.channel[key] = value;
@@ -33,13 +33,9 @@ class Message extends Events {
     message.me.id = message.me.user.id;
 
     message.me.bitfield = new BitField(computePermissions(message.me, message.guild, message.channel), PERMISSION);
-    
-    if (!message.me.bitfield.has('SEND_MESSAGES')) return;
-    
-    message.member.bitfield = new BitField(computePermissions(message.member, message.guild, message.channel), PERMISSION);
-    
-    message.db = {};
 
+    message.db = {};
+    
     await mongoose.model('Users').findOne({id: message.author.id}, async (err, user) => {
       if (user) return message.db.user = user;
       return await mongoose.model('Users').create({
@@ -48,10 +44,36 @@ class Message extends Events {
         message.db.user = _user;
       });
     });
-
+    
     message.db.guild = await mongoose.model('Guilds').findOne({id: message.guild_id});
-
+    
+    message.member.bitfield = new BitField(computePermissions(message.member, message.guild, message.channel), PERMISSION);
+    
     message.db.guild.bitfield = new BitField(message.db.guild.plugins, PLUGINS);
+
+    if (message.db.guild.bitfield.has('LEVELING')) {
+      await mongoose.model('Leveling').findOne({id: message.guild_id}, async (err, leveling) => {
+        if (leveling) return message.db.leveling = leveling;
+        return await mongoose.model('Users').create({
+          id: message.guild_id,
+          members: {
+            [message.author.id]: 0,
+          },
+        }).then((_leveling) => {
+          message.db.leveling = _leveling;
+        });
+      });
+
+      mongoose.model('Leveling').findOneAndUpdate({id: message.guild_id}, {
+        $inc: {
+          members: {
+            [message.author.id]: 0,
+          },
+        },
+      });
+    };
+
+    if (!message.me.bitfield.has('SEND_MESSAGES')) return;
 
     if (!message.content.startsWith(message.db.user.prefix)) return;
 

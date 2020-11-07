@@ -1,7 +1,6 @@
 'use strict';
 
 const Commands = require('../../structures/Commands');
-const {ChannelNode} = require('kobu-lib');
 const mongoose = require('mongoose');
 const {flags: {PLUGINS}} = require('./../../util/Constant');
 const BitField = require('../../util/BitField');

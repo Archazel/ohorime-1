@@ -37,37 +37,61 @@ class Ohorime extends Client {
   };
 
   loadPlugins(path) {
+    // Fetch plugin folders
     const files = fs.readdirSync(path, 'utf-8');
+
     for (const file of files) {
+      // parse config.yaml config
       const config = yaml.parse(fs.readFileSync((resolve(`${path}/${file}/plugin.yaml`)), {encoding: 'utf-8'}));
+      
+      // Create plugin instance
       const plugin = new Plugins(this, config.name, new Collection());
       console.log('[*] Load %s plugin config', plugin.name);
+      
+      // Load commands in to plugin folder
       this.loadCommands(`${path}/${file}`, plugin, config);
+
+      // Set plugins instance
+      this.plugins.set(plugin.name, plugin);
     };
   };
 
   loadCommands(path, plugin, config) {
+    // fetch commands file
     const files = fs.readdirSync(path, 'utf-8');
+
     let Command;
+
+    // If config has preprocessor
     if (Boolean(config.preprocessor)) {
       console.log('[*] %s preprocessor detected', config.name);
+
+      // Load commands template
       try {
         Command = require(resolve(`${path}/${config.preprocessor.file}.gen.js`));
-      } catch (error) {console.error('Gen file not found')};
+      } catch (error) {return console.error('Gen file not found')};
+      
+      // Set global config
       const fileConf = {
         ...config.preprocessor.global,
       };
+
+      // create commands for all step
       for (const step of config.preprocessor.steps) {
+        // Save commands
         fileConf.name = step.name;
         const command = new Command(this, fileConf);
         plugin.commands.set(command.name?.toLowerCase(), command);
-        this.plugins.set(plugin.name, plugin);
       };
     };
+
+
     for (const file of files) {
+      // If file it's an generator (.gen.js) return
       if (file.endsWith('.gen.js')) return;
       else if (!file.endsWith('.js') && !file.endsWith('.mjs')) return;
       else { 
+        // Save commands
         Command = require(resolve(`${path}/${file}`));
         const command = new Command(this);
         plugin.commands.set(command.name?.toLowerCase(), command);
@@ -89,13 +113,13 @@ class Ohorime extends Client {
   start(token) {
     this.mongoDB.connect().then(() => {
       console.log('[*] Connected to mongoDB');
-      this.redis.connect().then(() => {
+      this.redis.connect();
+      this.redis.socket.once('connect', () => {
         console.log('[*] Connected to redis');
         this.connect(token);
-      }).catch(() => {
-        throw Error('Connection impossible to redis');
       });
-    }).catch(() => {
+    }).catch((e) => {
+      console.log(e);
       throw Error('Connection impossible to mongoDB');
     });
   };

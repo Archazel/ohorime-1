@@ -1,7 +1,6 @@
 'use strict';
 
 const Commands = require('./../../structures/Commands');
-const {ChannelNode} = require('kobu-lib');
 
 class Help extends Commands {
   constructor(client) {

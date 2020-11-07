@@ -2,7 +2,6 @@
 
 const Commands = require('../../structures/Commands');
 const {parseMention} = require('../../util/Util');
-const {ChannelNode} = require('kobu-lib');
 
 class Social extends Commands {
   constructor(client, pregenerate) {

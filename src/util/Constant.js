@@ -9,10 +9,9 @@ const flags = {
     URGENT: 1 << 4,
   },
   PLUGINS: {
-    MODERATION: 1 << 0,
-    SOCIAL: 1 << 1,
-    MUSIC: 1 << 2,
-    LEVELING: 1 << 3,
+    SOCIAL: 1 << 0,
+    MUSIC: 1 << 1,
+    LEVELING: 1 << 2,
   },
   PERMISSION: {
     CREATE_INSTANT_INVITE: 1 << 0,
