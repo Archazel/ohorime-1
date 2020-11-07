@@ -12,10 +12,11 @@
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
     "axios": "^0.21.0",
-    "ioredis": "^4.19.1",
+    "ioredis": "^4.19.2",
     "kobu-lib": "github:ohorime/kobu-lib",
-    "mongoose": "^5.10.11",
-    "ws": "^7.3.1"
+    "mongoose": "^5.10.13",
+    "ws": "^7.3.1",
+    "yaml": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

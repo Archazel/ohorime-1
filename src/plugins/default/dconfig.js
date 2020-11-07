@@ -19,10 +19,9 @@ class Config extends Commands {
   };
 
   async handle(message, args) {
-    const channel = new ChannelNode(this.client);
     let enableGuild = message.member.bitfield.has('MANAGE_GUILD');
 
-    if (!args.join('')) return channel.createMessage(message.channel_id, {
+    if (!args.join('')) return message.channel.createMessage({
       data: {
         embed: {
           description: `Personal commands: \`color\`, \`prefix\`${enableGuild ? '\nGuild commands: `plugins`' : ''}`,
@@ -34,7 +33,7 @@ class Config extends Commands {
     const setter = args.shift();
 
     if (setter == 'color') {
-      if (!args.join('')) return channel.createMessage(message.channel_id, {
+      if (!args.join('')) return message.channel.createMessage({
         data: {
           embed: {
             description: 'Please enter a valid color code',
@@ -54,7 +53,7 @@ class Config extends Commands {
       }, {
         color,
       }).then((old) => {
-        return channel.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: {
             embed: {
               description: `🎊 Color updated ${old.color} -> ${color}`,
@@ -64,7 +63,7 @@ class Config extends Commands {
         });
       });
     } else if (setter == 'prefix') {
-      if (!args.join('')) return channel.createMessage(message.channel_id, {
+      if (!args.join('')) return message.channel.createMessage({
         data: {
           embed: {
             description: 'Please enter a valid prefix',
@@ -80,7 +79,7 @@ class Config extends Commands {
       }, {
         prefix: argPrefix,
       }).then((old) => {
-        return channel.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: {
             embed: {
               description: `🎊 Prefix updated ${old.prefix} -> ${argPrefix}`,
@@ -91,7 +90,7 @@ class Config extends Commands {
       });
     } else if (setter == 'plugins') {
       if (!enableGuild) {
-        return channel.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: {
             embed: {
               description: 'You missing permissions: `manage_guild`',
@@ -109,7 +108,7 @@ class Config extends Commands {
       const invalidArg = `Plugins lists: \`${plugins.join('`, `')}\`\nActions: \`enable\`, \`disable\``;
 
       if (!args.join('')) {
-        return channel.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: {
             embed: {
               description: invalidArg,
@@ -123,7 +122,7 @@ class Config extends Commands {
       const actionPlugins = args.join('').trim();
 
       if (!plugins.includes(argPlugins)) {
-        return channel.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: {
             embed: {
               description: invalidArg,
@@ -134,7 +133,7 @@ class Config extends Commands {
       };
 
       if (!actionPlugins || (actionPlugins != 'enable' && actionPlugins != 'disable')) {
-        return channel.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: {
             embed: {
               description: `Actions: \`${argPlugins} enable/disable\``,
@@ -155,7 +154,7 @@ class Config extends Commands {
         }, {
           plugins: flags,
         }).then((old) => {
-          return channel.createMessage(message.channel_id, {
+          return message.channel.createMessage({
             data: {
               embed: {
                 description: `🎊 Plugins updated ${old.plugins} -> ${flags}`,
@@ -177,7 +176,7 @@ class Config extends Commands {
         }, {
           plugins: bitfield.bit,
         }).then((old) => {
-          return channel.createMessage(message.channel_id, {
+          return message.channel.createMessage({
             data: {
               embed: {
                 description: `🎊 Plugins updated ${old.plugins} -> ${bitfield.bit}`,

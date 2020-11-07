@@ -12,8 +12,6 @@ class Help extends Commands {
   };
 
   handle(message, args) {
-    const channel = new ChannelNode(this.client);
-
     const embed = {
       description: 'Plugins list',
       color: parseInt('0x' + message.db.user.color) || 0x000,
@@ -25,7 +23,7 @@ class Help extends Commands {
       })),
     };
 
-    channel.createMessage(message.channel_id, {
+    message.channel.createMessage({
       data: {
         embed: embed,
       },

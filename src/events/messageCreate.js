@@ -21,7 +21,11 @@ class Message extends Events {
 
     message.guild = await this.client.redis.socket.get(`guild_${message.guild_id}`).then(JSON.parse);
 
-    message.channel = message.guild.channels.find((channel) => channel.id === message.channel_id);
+    message.channel = new ChannelNode(this.client, message.channel_id);
+    
+    for (const [key, value] of Object.entries(message.guild.channels.find((channel) => channel.id === message.channel_id))) {
+      message.channel[key] = value;
+    };
     
     message.bot = await this.client.redis.socket.get('user').then(JSON.parse);
 
@@ -58,13 +62,11 @@ class Message extends Events {
     
     if (!plugin) return console.log('Plugins not found');
 
-    const channelNode = new ChannelNode(this.client);
-
     if (plugin.name != 'default' && !message.db.guild.bitfield.has(plugin.name.toUpperCase())) {
       const msg = `[${
         plugin.name}] plugins disable, please try \`o!config plugins ${plugin.name} enable\``;
-      return channelNode.createMessage(message.channel_id, {
-        data: !message.me.bitfield.has('EMBED_LINKS') ? 
+      return message.channel.createMessage({
+        data: message.me.bitfield.has('EMBED_LINKS') ? 
         {
           embed: {
             description: msg,
@@ -88,7 +90,7 @@ class Message extends Events {
 
       if (missing.length > 0) {
         const msg = `Bot missing permissions: \`${missing.join('`, `')}\``;
-        return channelNode.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: !message.me.bitfield.has('EMBED_LINKS') ? 
           {
             content: msg,
@@ -110,7 +112,7 @@ class Message extends Events {
 
       if (missing.length > 0) {
         const msg = `You missing permissions: \`${missing.join('`, `')}\``;
-        return channelNode.createMessage(message.channel_id, {
+        return message.channel.createMessage({
           data: !message.me.bitfield.has('EMBED_LINKS') ?
           {
             content: msg,

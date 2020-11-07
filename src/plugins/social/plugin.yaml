@@ -1,0 +1,20 @@
+name: 'social'
+preprocessor:
+  file: 'social'
+  global:
+    memberPermissions: []
+    mePermissions: ['SEND_MESSAGES', 'EMBED_LINKS']
+  steps:
+    - name: 'eat'
+    - name: 'hug'
+    - name: 'kiss'
+    - name: 'pat'
+    - name: 'pout'
+    - name: 'run'
+    - name: 'sparkle'
+    - name: 'tickle'
+    - name: 'angry'
+    - name: 'blush'
+    - name: 'cry'
+    - name: 'slap'
+    - name: 'stare'

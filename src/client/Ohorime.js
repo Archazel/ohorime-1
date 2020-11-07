@@ -8,6 +8,7 @@ const Redis = require('./../database/redis');
 const {resolve} = require('path');
 const Collection = require('@discordjs/collection');
 const axios = require('axios');
+const yaml = require('yaml');
 
 class Ohorime extends Client {
   constructor() {
@@ -38,24 +39,47 @@ class Ohorime extends Client {
   loadPlugins(path) {
     const files = fs.readdirSync(path, 'utf-8');
     for (const file of files) {
-      const plugin = new Plugins(this, file, new Collection());
-      this.loadCommands(`${path}/${file}`, plugin);
+      const config = yaml.parse(fs.readFileSync((resolve(`${path}/${file}/plugin.yaml`)), {encoding: 'utf-8'}));
+      const plugin = new Plugins(this, config.name, new Collection());
+      console.log('[*] Load %s plugin config', plugin.name);
+      this.loadCommands(`${path}/${file}`, plugin, config);
     };
   };
 
-  loadCommands(path, plugin) {
+  loadCommands(path, plugin, config) {
     const files = fs.readdirSync(path, 'utf-8');
+    let Command;
+    if (Boolean(config.preprocessor)) {
+      console.log('[*] %s preprocessor detected', config.name);
+      try {
+        Command = require(resolve(`${path}/${config.preprocessor.file}.gen.js`));
+      } catch (error) {console.error('Gen file not found')};
+      const fileConf = {
+        ...config.preprocessor.global,
+      };
+      for (const step of config.preprocessor.steps) {
+        fileConf.name = step.name;
+        const command = new Command(this, fileConf);
+        plugin.commands.set(command.name?.toLowerCase(), command);
+        this.plugins.set(plugin.name, plugin);
+      };
+    };
     for (const file of files) {
-      const Command = require(resolve(`${path}/${file}`));
-      const command = new Command(this);
-      plugin.commands.set(command.name?.toLowerCase(), command);
-      this.plugins.set(plugin.name, plugin);
+      if (file.endsWith('.gen.js')) return;
+      else if (!file.endsWith('.js') && !file.endsWith('.mjs')) return;
+      else { 
+        Command = require(resolve(`${path}/${file}`));
+        const command = new Command(this);
+        plugin.commands.set(command.name?.toLowerCase(), command);
+        this.plugins.set(plugin.name, plugin);
+      };
     };
   };
 
   loadEvents(path) {
     const files = fs.readdirSync(path, 'utf-8');
     for (const file of files) {
+      if (!file.endsWith('.js') && !file.endsWith('.mjs')) return;
       const Event = require(resolve(`${path}/${file}`));
       const event = new Event(this);
       this.on(event.name, (...args) => event.handle(...args));

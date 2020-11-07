@@ -12,9 +12,7 @@ class Ping extends Commands {
   };
 
   handle(message, args) {
-    const channel = new ChannelNode(this.client);
-
-    channel.createMessage(message.channel_id, {
+    message.channel.createMessage({
       data: {
         embed: {
           description: `Ping 🏓 [${this.client.ping || 'x'} ms]\nRam 🚀 [${
