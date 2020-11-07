@@ -88,14 +88,13 @@ class Ohorime extends Client {
 
     for (const file of files) {
       // If file it's an generator (.gen.js) return
-      if (file.endsWith('.gen.js')) return;
-      else if (!file.endsWith('.js') && !file.endsWith('.mjs')) return;
-      else { 
+      if (file.endsWith('.gen.js')) continue;
+      else if (!file.endsWith('.js') && !file.endsWith('.mjs')) continue;
+      else {
         // Save commands
         Command = require(resolve(`${path}/${file}`));
         const command = new Command(this);
         plugin.commands.set(command.name?.toLowerCase(), command);
-        this.plugins.set(plugin.name, plugin);
       };
     };
   };

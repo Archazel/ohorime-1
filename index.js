@@ -1,5 +1,4 @@
 'use strict';
-require('@tensorflow/tfjs');
 
 const {Cluster} = require('kobu-lib');
 

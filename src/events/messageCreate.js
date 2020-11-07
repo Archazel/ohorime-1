@@ -35,15 +35,16 @@ class Message extends Events {
     message.me.bitfield = new BitField(computePermissions(message.me, message.guild, message.channel), PERMISSION);
 
     message.db = {};
+
+    const _user = await mongoose.model('Users').exists({id: message.author.id});
     
-    await mongoose.model('Users').findOne({id: message.author.id}, async (err, user) => {
-      if (user) return message.db.user = user;
-      return await mongoose.model('Users').create({
+    if (_user) {
+      message.db.user = await mongoose.model('Users').findOne({id: message.author.id});
+    } else {
+      message.db.user = await mongoose.model('Users').create({
         id: message.author.id,
-      }).then((_user) => {
-        message.db.user = _user;
       });
-    });
+    };
     
     message.db.guild = await mongoose.model('Guilds').findOne({id: message.guild_id});
     
@@ -52,24 +53,21 @@ class Message extends Events {
     message.db.guild.bitfield = new BitField(message.db.guild.plugins, PLUGINS);
 
     if (message.db.guild.bitfield.has('LEVELING')) {
-      await mongoose.model('Leveling').findOne({id: message.guild_id}, async (err, leveling) => {
-        if (leveling) return message.db.leveling = leveling;
-        return await mongoose.model('Users').create({
-          id: message.guild_id,
-          members: {
-            [message.author.id]: 0,
-          },
-        }).then((_leveling) => {
-          message.db.leveling = _leveling;
-        });
-      });
-
-      mongoose.model('Leveling').findOneAndUpdate({id: message.guild_id}, {
-        $inc: {
-          members: {
-            [message.author.id]: 0,
-          },
-        },
+      mongoose.model('Leveling').exists({id: message.guild_id}, async (err, exist) => {
+        if (exist) {
+          await mongoose.model('Leveling').findOneAndUpdate({id: message.guild_id}, {
+            $inc: {
+              [`members.${message.author.id}`]: 1,
+            },        
+          });
+        } else {
+          await mongoose.model('Leveling').create({
+            id: message.guild_id,
+            members: {
+              [message.author.id]: 0,
+            },
+          });
+        };
       });
     };
 
