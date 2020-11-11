@@ -88,6 +88,40 @@ class Util {
     
     return matchs;
   };
+
+  static calculator(xp) {
+    const algo = {
+        xp,
+        difficulty: 125,
+        lvl: 0,
+        next: 0,
+        _last: 0,
+        ratio: 0,
+    };
+    algo.lvl = Math.ceil(algo.xp / algo.difficulty);
+    algo.next = algo.lvl * algo.difficulty;
+    algo._last = (algo.lvl - 1) * algo.difficulty;
+    algo.ratio = (algo.xp - algo._last) / (algo.next - algo._last);
+
+    return algo;
+  };
+
+  static removeEnd(str, lgt) {
+    let arr = str.split('');
+    for (let i = 0; i < lgt; i++) {
+      arr.pop();
+    };
+    return arr.join('');
+  };
+
+  static parseNum(num) {
+    num = parseInt(num);
+    if (num < 1000) return num;
+    else if (num < 1000000 && num > 999) return `${Util.removeEnd(String(num), 3)}k`;
+    else if (num < 1000000000 && num > 999999) return `${Util.removeEnd(String(num), 6)}M`;
+    else if (num < 1000000000000 && num > 999999999) return `${Util.removeEnd(String(num), 9)}B`;
+    else `${Util.removeEnd(String(num), 12)}`;
+  };
 };
 
 module.exports = exports = Util;

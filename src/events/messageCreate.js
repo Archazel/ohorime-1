@@ -53,21 +53,25 @@ class Message extends Events {
     message.db.guild.bitfield = new BitField(message.db.guild.plugins, PLUGINS);
 
     if (message.db.guild.bitfield.has('LEVELING')) {
-      mongoose.model('Leveling').exists({id: message.guild_id}, async (err, exist) => {
-        if (exist) {
-          await mongoose.model('Leveling').findOneAndUpdate({id: message.guild_id}, {
-            $inc: {
-              [`members.${message.author.id}`]: 1,
-            },        
-          });
-        } else {
-          await mongoose.model('Leveling').create({
-            id: message.guild_id,
-            members: {
-              [message.author.id]: 0,
-            },
-          });
-        };
+      await new Promise((resolve) => {
+        mongoose.model('Leveling').exists({id: message.guild_id}, async (err, exist) => {
+          if (exist) {
+            await mongoose.model('Leveling').findOneAndUpdate({id: message.guild_id}, {
+              $inc: {
+                [`members.${message.author.id}`]: 1,
+              },        
+            });
+            resolve();
+          } else {
+            await mongoose.model('Leveling').create({
+              id: message.guild_id,
+              members: {
+                [message.author.id]: 0,
+              },
+            });
+            resolve();
+          };
+        });
       });
     };
 

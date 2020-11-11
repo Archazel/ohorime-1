@@ -8,7 +8,7 @@ class Ping extends Events{
   };
 
   handle(ping) {
-    console.log(`${ping} ms`);
+    console.log('[*] PING: %s ms', ping);
   };
 };
 

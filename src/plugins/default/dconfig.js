@@ -4,6 +4,7 @@ const Commands = require('../../structures/Commands');
 const mongoose = require('mongoose');
 const {flags: {PLUGINS}} = require('./../../util/Constant');
 const BitField = require('../../util/BitField');
+const {loadImage} = require('canvas');
 
 class Config extends Commands {
   constructor(client) {
