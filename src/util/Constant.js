@@ -10,7 +10,7 @@ const flags = {
   },
   PLUGINS: {
     SOCIAL: 1 << 0,
-    MUSIC: 1 << 1,
+    STARBOARD: 1 << 1,
     LEVELING: 1 << 2,
   },
   PERMISSION: {

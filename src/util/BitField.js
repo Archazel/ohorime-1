@@ -50,6 +50,17 @@ class BitField {
       return this.bit = bit &= ~flag;
     };
   };
+
+  get(flag = 0) {
+    if (typeof flag == 'string') {
+      if (!this.flags[flag]) throw Error(`Invalid bitfield ${flag}`);
+      return this.flags[flag];
+    } else {
+      const fd = Object.keys(this.flags)[Object.values(this.flags).findIndex((_bit) => _bit == flag)];
+      if (!fd) throw Error(`Invalid bitfield ${flag}`);
+      return fd;
+    };
+  };
 };
 
 module.exports = exports = BitField;

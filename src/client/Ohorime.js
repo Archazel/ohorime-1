@@ -16,10 +16,13 @@ class Ohorime extends Client {
      * 1 << 0 GUILDS
      * 1 << 9 GUILD_MESSAGES
      * 1 << 1 GUILDS_MEMBERS
-     * 1 << 8 GUILD_PRESENCES 
+     * 1 << 8 GUILD_PRESENCES
+     * 1 << 10 GUILD_MESSAGE_REACTIONS
      */
     super({
-      intents: 1 << 0 | 1 << 9 | 1 << 1 | 1 << 8,
+      intents:
+        1 << 0 | 1 << 9 | 1 << 1 |
+        1 << 8 | 1 << 10,
     });
 
     this.plugins = new Collection();

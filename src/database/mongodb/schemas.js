@@ -17,7 +17,10 @@ module.exports.Guilds = exports.Guilds = new mongoose.Schema({
   plugins: {
     type: String,
     default: '0',
-  }
+  },
+  starboard: {
+    type: String,
+  },
 });
 
 module.exports.Users = exports.Users = new mongoose.Schema({
@@ -61,17 +64,23 @@ module.exports.Leveling = exports.Leveling = new mongoose.Schema({
   },
 });
 
-module.exports.Moderation = exports.Moderation = new mongoose.Schema({
+module.exports.Starboard = exports.Starboard = new mongoose.Schema({
   id: {
     type: String,
     required: true,
     index: true,
     unique: true,
   },
-  warns: {
-    type: Object,
+  referred: {
+    type: String,
+    required: false,
+    index: true,
+    unique: false,
   },
-  mutes: {
-    type: Object,
-  }
+  guild: {
+    type: String,
+    required: true,
+    index: true,
+    unique: false,
+  },
 });
