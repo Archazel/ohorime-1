@@ -1,7 +1,6 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const {randomString} = require('../../util/Util');
 
 module.exports.Guilds = exports.Guilds = new mongoose.Schema({
   id: {
@@ -19,6 +18,12 @@ module.exports.Guilds = exports.Guilds = new mongoose.Schema({
     default: '0',
   },
   starboard: {
+    type: String,
+  },
+  welcome: {
+    type: String,
+  },
+  goodbye: {
     type: String,
   },
 });

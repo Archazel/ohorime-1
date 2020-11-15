@@ -2,9 +2,9 @@
 
 const Commands = require('../../structures/Commands');
 const mongoose = require('mongoose');
-const { flags: { PLUGINS } } = require('./../../util/Constant');
+const {flags: {PLUGINS, PERMISSION}} = require('./../../util/Constant');
 const BitField = require('../../util/BitField');
-const { parseMention, computePermissions } = require('../../util/Util');
+const {parseMention, computePermissions} = require('../../util/Util');
 
 class Config extends Commands {
   constructor(client) {
@@ -25,7 +25,7 @@ class Config extends Commands {
       data: {
         embed: {
           description: `Personal commands: \`color\`, \`prefix\`${enableGuild ?
-            '\nGuild commands: `plugins`, `starboard`' : 
+            '\nGuild commands: `plugins`, `starboard`, `welcome`, `goodbye`' :
             ''}\n\nShow my config: \`me\`\nShow guild config: \`guild\``,
           color: parseInt('0x' + message.db.user.color) || 0x00
         },
@@ -89,6 +89,27 @@ class Config extends Commands {
             },
           },
         });
+      });
+    } else if (setter == 'me') {
+      return message.channel.createMessage({
+        data: {
+          embed: {
+            description: 'Your personnal config',
+            fields: [
+              {
+                name: '⚜️ Color',
+                value: message.db.user.color,
+                inline: true,
+              },
+              {
+                name: '🔑 Prefix',
+                value: message.db.user.prefix,
+                inline: true,
+              },
+            ],
+            color: parseInt('0x' + message.db.user.color) || 0x00
+          },
+        },
       });
     } else if (setter == 'plugins') {
       if (!enableGuild) {
@@ -212,6 +233,17 @@ class Config extends Commands {
       });
 
       if (args.join('') != 'reset') {
+        // Check permissions
+        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel), PERMISSION);
+
+        if (!permissions.has('SEND_MESSAGES')) return message.channel.createMessage({
+          data: {
+            embed: {
+              description: 'I cannot send a message in this channel\nmissing permission -> `send_messages`',
+              color: parseInt('0x' + message.db.user.color) || 0x00,
+            },
+          },
+        });
 
         const bitfield = new BitField(message.db.guild.plugins, PLUGINS);
 
@@ -235,8 +267,74 @@ class Config extends Commands {
           });
         });
       } else {
+        const bitfield = new BitField(message.db.guild.plugins, PLUGINS);
+        bitfield.remove(bitfield.flags.STARBOARD);
+
+        return await mongoose.model('Guilds').findOneAndUpdate({
+          id: message.db.guild.id,
+        }, {
+          plugins: bitfield.bit,
+          starboard: null,
+        }).then(() => {
+          return message.channel.createMessage({
+            data: {
+              embed: {
+                description: `🎊 Plugins ${bitfield.get(PLUGINS.STARBOARD)} updated.`,
+                color: parseInt('0x' + message.db.user.color) || 0x00
+              },
+            },
+          });
+        });
+      };
+    } else if (setter == 'guild') {
+      return message.channel.createMessage({
+        data: {
+          embed: {
+            description: 'Guild personnal config',
+            fields: [
+              {
+                name: '🏷️ Plugins',
+                value: message.db.guild.plugins,
+                inline: true,
+              },
+              {
+                name: '⭐ Starboard',
+                value: message.db.guild.starboard ?
+                  `<#${message.db.guild.starboard}>` :
+                  'No actif',
+                inline: true,
+              },
+            ],
+            color: parseInt('0x' + message.db.user.color) || 0x00
+          },
+        },
+      });
+    } else if (setter == 'welcome') {
+      if (!enableGuild) {
+        return message.channel.createMessage({
+          data: {
+            embed: {
+              description: 'You missing permissions: `manage_guild`',
+              color: parseInt('0x' + message.db.user.color) || 0x00,
+            },
+          },
+        });
+      };
+
+      const argChannel = message.guild.channels.find((channel) => channel.id == parseMention(args)?.channel[1]);
+
+      if (!argChannel && args.join('').trim() != 'reset') return message.channel.createMessage({
+        data: {
+          embed: {
+            description: 'Please mention a valide channel or enter `reset`',
+            color: parseInt('0x' + message.db.user.color) || 0x00,
+          },
+        },
+      });
+
+      if (args.join('') != 'reset') {
         // Check permissions
-        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel));
+        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel), PERMISSION);
 
         if (!permissions.has('SEND_MESSAGES')) return message.channel.createMessage({
           data: {
@@ -246,20 +344,125 @@ class Config extends Commands {
             },
           },
         });
-        
+
         const bitfield = new BitField(message.db.guild.plugins, PLUGINS);
-        bitfield.remove(bitfield.flags.STARBOARD);
+
+        if (!bitfield.has(PLUGINS.WELCOME)) {
+          bitfield.add(bitfield.flags.WELCOME);
+        };
+
+        console.log(argChannel);
 
         return await mongoose.model('Guilds').findOneAndUpdate({
           id: message.db.guild.id,
         }, {
           plugins: bitfield.bit,
-          starboard: null,
+          welcome: argChannel.id,
         }).then((old) => {
           return message.channel.createMessage({
             data: {
               embed: {
-                description: `🎊 Plugins ${bitfield.get(PLUGINS.STARBOARD)} updated.`,
+                description: `🎊 Plugins ${bitfield.get(PLUGINS.WELCOME)} updated.\n🏵️ Channels updated ${old.welcome} -> ${argChannel.id}`,
+                color: parseInt('0x' + message.db.user.color) || 0x00
+              },
+            },
+          });
+        });
+      } else {
+
+        const bitfield = new BitField(message.db.guild.plugins, PLUGINS);
+        bitfield.remove(bitfield.flags.WELCOME);
+
+        return await mongoose.model('Guilds').findOneAndUpdate({
+          id: message.db.guild.id,
+        }, {
+          plugins: bitfield.bit,
+          welcome: null,
+        }).then(() => {
+          return message.channel.createMessage({
+            data: {
+              embed: {
+                description: `🎊 Plugins ${bitfield.get(PLUGINS.WELCOME)} updated.`,
+                color: parseInt('0x' + message.db.user.color) || 0x00
+              },
+            },
+          });
+        });
+      };
+    } else if (setter == 'goodbye') {
+      if (!enableGuild) {
+        return message.channel.createMessage({
+          data: {
+            embed: {
+              description: 'You missing permissions: `manage_guild`',
+              color: parseInt('0x' + message.db.user.color) || 0x00,
+            },
+          },
+        });
+      };
+
+      const argChannel = message.guild.channels.find((channel) => channel.id == parseMention(args)?.channel[1]);
+
+      if (!argChannel && args.join('').trim() != 'reset') return message.channel.createMessage({
+        data: {
+          embed: {
+            description: 'Please mention a valide channel or enter `reset`',
+            color: parseInt('0x' + message.db.user.color) || 0x00,
+          },
+        },
+      });
+
+      if (args.join('') != 'reset') {
+        // Check permissions
+        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel), PERMISSION);
+
+        if (!permissions.has('SEND_MESSAGES')) return message.channel.createMessage({
+          data: {
+            embed: {
+              description: 'I cannot send a message in this channel\nmissing permission -> `send_messages`',
+              color: parseInt('0x' + message.db.user.color) || 0x00,
+            },
+          },
+        });
+
+        const bitfield = new BitField(message.db.guild.plugins, PLUGINS);
+
+        if (!bitfield.has(PLUGINS.GOODBYE)) {
+          bitfield.add(bitfield.flags.GOODBYE);
+        };
+
+        console.log(argChannel);
+
+        return await mongoose.model('Guilds').findOneAndUpdate({
+          id: message.db.guild.id,
+        }, {
+          plugins: bitfield.bit,
+          goodbye: argChannel.id,
+        }).then((old) => {
+          return message.channel.createMessage({
+            data: {
+              embed: {
+                description: `🎊 Plugins ${bitfield.get(PLUGINS.GOODBYE)} updated.\n🏵️ Channels updated ${old.goodbye} -> ${argChannel.id}`,
+                color: parseInt('0x' + message.db.user.color) || 0x00
+              },
+            },
+          });
+        });
+      } else {
+
+        const bitfield = new BitField(message.db.guild.plugins, PLUGINS);
+        bitfield.remove(bitfield.flags.GOODBYE);
+
+        return await mongoose.model('Guilds').findOneAndUpdate({
+          id: message.db.guild.id,
+        }, {
+          plugins: bitfield.bit,
+          goodbye: null,
+        }).then(() => {
+          return message.channel.createMessage({
+            data: {
+              embed: {
+                description: `🎊 Plugins ${bitfield.get(PLUGINS.GOODBYE)} updated.`,
                 color: parseInt('0x' + message.db.user.color) || 0x00
               },
             },

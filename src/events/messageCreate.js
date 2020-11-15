@@ -14,6 +14,7 @@ class Message extends Events {
   };
 
   async handle(message) {
+    console.log(message);
     // Collector broadcast
     for (const collector of this.client.collectors
       .array().filter((br) => br.channel == message.channel_id)) {
@@ -27,6 +28,8 @@ class Message extends Events {
       this.client.collectors.set(collector.uuid, collector);
       return collector;
     };
+
+    console.log('d');
 
     if (message.author.bot || message.bitfield.has('URGENT')) return;
 
@@ -91,6 +94,7 @@ class Message extends Events {
       });
     };
 
+    console.log(message.db.user);
     if (!message.me.bitfield.has('SEND_MESSAGES')) return;
 
     if (!message.content.startsWith(message.db.user.prefix)) return;
@@ -102,7 +106,7 @@ class Message extends Events {
     
     if (!plugin) return console.log('Plugins not found');
 
-    if (plugin.name != 'default' && !message.db.guild.bitfield.has(plugin.name.toUpperCase())) {
+    if (plugin.name != 'default' && plugin.name != 'developer' && !message.db.guild.bitfield.has(plugin.name.toUpperCase())) {
       const msg = `[${
         plugin.name}] plugins disable, please try \`o!config plugins ${plugin.name} enable\``;
       return message.channel.createMessage({
@@ -121,6 +125,7 @@ class Message extends Events {
 
     const cmd = plugin.commands.get(command);
     if (!cmd) return console.log('Command not found');
+    if (Boolean(cmd.data.onlyAccessFor) && cmd.data.onlyAccessFor != message.author.id) return;
 
     if (!message.me.bitfield.has('ADMINISTRATOR')) {
       let missing = [];

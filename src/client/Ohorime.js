@@ -51,7 +51,7 @@ class Ohorime extends Client {
       const config = yaml.parse(fs.readFileSync((resolve(`${path}/${file}/plugin.yaml`)), {encoding: 'utf-8'}));
       
       // Create plugin instance
-      const plugin = new Plugins(this, config.name, new Collection());
+      const plugin = new Plugins(this, config.name, config, new Collection());
       console.log('[*] Load %s plugin config', plugin.name);
       
       // Load commands in to plugin folder
@@ -80,6 +80,8 @@ class Ohorime extends Client {
       // Set global config
       const fileConf = {
         ...config.preprocessor.global,
+        hidden: config.hidden,
+        onlyAccessFor: config.onlyAccessFor,
       };
 
       // create commands for all step
@@ -100,6 +102,8 @@ class Ohorime extends Client {
         // Save commands
         Command = require(resolve(`${path}/${file}`));
         const command = new Command(this);
+        command.data.hidden = config.hidden;
+        command.data.onlyAccessFor = config.onlyAccessFor;
         plugin.commands.set(command.name?.toLowerCase(), command);
       };
     };
@@ -108,7 +112,7 @@ class Ohorime extends Client {
   loadEvents(path) {
     const files = fs.readdirSync(path, 'utf-8');
     for (const file of files) {
-      if (!file.endsWith('.js') && !file.endsWith('.mjs')) return;
+      if (!file.endsWith('.js') && !file.endsWith('.mjs')) continue;
       const Event = require(resolve(`${path}/${file}`));
       const event = new Event(this);
       this.on(event.name, (...args) => event.handle(...args));

@@ -14,7 +14,7 @@ class Help extends Commands {
     const embed = {
       description: 'Plugins list',
       color: parseInt('0x' + message.db.user.color) || 0x000,
-      fields: this.client.plugins.map((plugin) => ({
+      fields: this.client.plugins.filter((plugin) => !plugin.data.hidden).map((plugin) => ({
         name: `${plugin.commands.size} • ${plugin.name} [${plugin.name != 'default' ?
           message.db.guild.bitfield.has(plugin.name.toUpperCase()) ? 'enabled' : 'disabled' :
           'enabled'}]`,

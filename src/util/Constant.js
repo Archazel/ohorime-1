@@ -14,6 +14,7 @@ const flags = {
     LEVELING: 1 << 2,
     ADMINISTRATION: 1 << 3,
     WELCOME: 1 << 4,
+    GOODBYE: 1 << 5,
   },
   PERMISSION: {
     CREATE_INSTANT_INVITE: 1 << 0,

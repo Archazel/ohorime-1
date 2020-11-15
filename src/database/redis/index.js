@@ -33,7 +33,7 @@ class Redis extends EventEmitter {
     });
     socket.on('end', () => {
       console.log('[*] Redis connection ended, try reconnecting after 5s');
-      setTimeout(() => this.connect(), 15000);
+      setTimeout(() => this.connect(), 5000);
     });
   };
 

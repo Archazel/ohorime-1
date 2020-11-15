@@ -92,7 +92,7 @@ class MessageReactionAdd extends Events{
                 name: originMessage.author.username,
                 icon_url: `https://cdn.discordapp.com/avatars/${originMessage.author.id}/${originMessage.author.avatar}.${originMessage.author.avatar.startsWith('a_') ? 'gif' : 'png'}`,
               },
-              description: originMessage.content,
+              description: `[Jump to message](https://discordapp.com/channels/${reaction.guild_id}/${reaction.channel_id}/${reaction.message_id})\n${originMessage.content}`,
               image: {
                 url: originMessage.attachments[0]?.url
               },
