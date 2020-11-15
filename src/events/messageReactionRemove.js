@@ -17,9 +17,9 @@ class MessageReactionRemove extends Events{
 
   async handle(reaction) {    
     if (reaction.emoji.name != this.stars[0]) {
-      const autorole = await mongoose.model('Autorole').findOne({messageID: reaction.message_id}, ['link']);
-      if (!autorole) return;
-      const peer = autorole.link.find((link) => link[0].name == reaction.emoji.name);
+      const reactionrole = await mongoose.model('Reactionrole').findOne({messageID: reaction.message_id}, ['link']);
+      if (!reactionrole) return;
+      const peer = reactionrole.link.find((link) => link[0].name == reaction.emoji.name);
 
       return await new GuildNode(this.client, reaction.guild_id).removeMemberRole(reaction.user_id, peer[1].id)
     };

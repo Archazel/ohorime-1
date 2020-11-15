@@ -13,6 +13,7 @@ const flags = {
     STARBOARD: 1 << 1,
     LEVELING: 1 << 2,
     ADMINISTRATION: 1 << 3,
+    WELCOME: 1 << 4,
   },
   PERMISSION: {
     CREATE_INSTANT_INVITE: 1 << 0,

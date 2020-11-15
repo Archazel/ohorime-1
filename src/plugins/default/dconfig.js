@@ -24,7 +24,9 @@ class Config extends Commands {
     if (!args.join('')) return message.channel.createMessage({
       data: {
         embed: {
-          description: `Personal commands: \`color\`, \`prefix\`${enableGuild ? '\nGuild commands: `plugins`, `starboard`' : ''}`,
+          description: `Personal commands: \`color\`, \`prefix\`${enableGuild ?
+            '\nGuild commands: `plugins`, `starboard`' : 
+            ''}\n\nShow my config: \`me\`\nShow guild config: \`guild\``,
           color: parseInt('0x' + message.db.user.color) || 0x00
         },
       },

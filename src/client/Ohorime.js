@@ -116,16 +116,14 @@ class Ohorime extends Client {
   };
 
   start(token) {
-    this.mongoDB.connect().then(() => {
+    this.mongoDB.connect();
+    this.mongoDB.once('co', () => {
       console.log('[*] Connected to mongoDB');
       this.redis.connect();
       this.redis.once('co', () => {
         console.log('[*] Connected to redis');
         this.connect(token);
       });
-    }).catch((e) => {
-      console.log(e);
-      throw Error('Connection impossible to mongoDB');
     });
   };
 

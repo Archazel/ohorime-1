@@ -29,11 +29,11 @@ class Redis extends EventEmitter {
     const socket = this.socket = new _Redis(this.options);
     socket.on('connect', () => {
       this.emit('co', true);
-      console.log('[*] Redis connected')
+      console.log('[*] Redis connected');
     });
     socket.on('end', () => {
       console.log('[*] Redis connection ended, try reconnecting after 5s');
-      setTimeout(() => this.start, 15000);
+      setTimeout(() => this.connect(), 15000);
     });
   };
 

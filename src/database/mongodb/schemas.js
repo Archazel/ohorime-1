@@ -99,7 +99,7 @@ module.exports.Starboard = exports.Starboard = new mongoose.Schema({
   },
 });
 
-module.exports.Autorole = exports.Autorole = new mongoose.Schema({
+module.exports.Reactionrole = exports.Reactionrole = new mongoose.Schema({
   messageID: {
     type: String,
     required: true,

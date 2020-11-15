@@ -18,7 +18,7 @@ class ReactionRole extends Commands {
     message.channel.createMessage({
       data: {
         embed: {
-          description: '📐 You want send your own autorole message (yes or no)',
+          description: '📐 You want send your own reactionrole message (yes or no)',
           color: parseInt('0x' + message.db.user.color) + 0x00,
         },
       },
@@ -44,7 +44,7 @@ class ReactionRole extends Commands {
         if (msg.content.toLowerCase().trim() != 'yes' && msg.content.toLowerCase().trim() != 'no') return message.channel.createMessage(({
           data: {
             embed: {
-              description: 'Please choose between **yes** or **no**\nEnter \`cancel\` for exit autorole',
+              description: 'Please choose between **yes** or **no**\nEnter \`cancel\` for exit reactionrole',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -55,7 +55,7 @@ class ReactionRole extends Commands {
           message.channel.createMessage({
             data: {
               embed: {
-                description: 'enter a emojis and a mention role\nexemple: ⚔️ @adventer\nEnter \`cancel\` for exit autorole',
+                description: 'enter a emojis and a mention role\nexemple: ⚔️ @adventer\nEnter \`cancel\` for exit reactionrole',
                 color: parseInt('0x' + message.db.user.color) + 0x00,
               },
             },
@@ -64,7 +64,7 @@ class ReactionRole extends Commands {
           message.channel.createMessage(({
             data: {
               embed: {
-                description: 'Enter your autorole message link\nEnter \`cancel\` for exit autorole',
+                description: 'Enter your reactionrole message link\nEnter \`cancel\` for exit reactionrole',
                 color: parseInt('0x' + message.db.user.color) + 0x00,
               },
             },
@@ -78,7 +78,7 @@ class ReactionRole extends Commands {
         if (!ids) return message.channel.createMessage(({
           data: {
             embed: {
-              description: 'Invalid discord message link\nEnter \`cancel\` for exit autorole',
+              description: 'Invalid discord message link\nEnter \`cancel\` for exit reactionrole',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -87,7 +87,7 @@ class ReactionRole extends Commands {
         if (ids[1] !== message.guild_id) return message.channel.createMessage(({
           data: {
             embed: {
-              description: 'The message must be in your guild\nEnter \`cancel\` for exit autorole',
+              description: 'The message must be in your guild\nEnter \`cancel\` for exit reactionrole',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -100,7 +100,7 @@ class ReactionRole extends Commands {
         if (_message.code == '10008') return message.channel.createMessage({
           data: {
             embed: {
-              description: 'Unknow message, please enter a valide discord message link\nEnter \`cancel\` for exit autorole',
+              description: 'Unknow message, please enter a valide discord message link\nEnter \`cancel\` for exit reactionrole',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -112,7 +112,7 @@ class ReactionRole extends Commands {
         message.channel.createMessage({
           data: {
             embed: {
-              description: 'enter a emojis and a mention role\nexemple: ⚔️ @adventer\nEnter \`cancel\` for exit autorole',
+              description: 'enter a emojis and a mention role\nexemple: ⚔️ @adventer\nEnter \`cancel\` for exit reactionrole',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -138,7 +138,7 @@ class ReactionRole extends Commands {
           return message.channel.createMessage({
             data: {
               embed: {
-                description: 'Unknow emoji\nEnter \`cancel\` for exit autorole',
+                description: 'Unknow emoji\nEnter \`cancel\` for exit reactionrole',
                 color: parseInt('0x' + message.db.user.color) + 0x00,
               },
             },
@@ -148,7 +148,7 @@ class ReactionRole extends Commands {
         if (emoji == '⭐') return message.channel.createMessage({
           data: {
             embed: {
-              description: 'Can\'t add this emoji. reason: starboard conflit\nEnter \`cancel\` for exit autorole',
+              description: 'Can\'t add this emoji. reason: starboard conflit\nEnter \`cancel\` for exit reactionrole',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -165,7 +165,7 @@ class ReactionRole extends Commands {
           return message.channel.createMessage({
             data: {
               embed: {
-                description: 'Unknow emoji\nEnter \`cancel\` for exit autorole',
+                description: 'Unknow emoji\nEnter \`cancel\` for exit reactionrole',
                 color: parseInt('0x' + message.db.user.color) + 0x00,
               },
             },
@@ -176,7 +176,7 @@ class ReactionRole extends Commands {
           return message.channel.createMessage({
             data: {
               embed: {
-                description: 'Unknow role\nEnter \`cancel\` for exit autorole',
+                description: 'Unknow role\nEnter \`cancel\` for exit reactionrole',
                 color: parseInt('0x' + message.db.user.color) + 0x00,
               },
             },
@@ -186,7 +186,7 @@ class ReactionRole extends Commands {
         return message.channel.createMessage({
           data: {
             embed: {
-              description: `🛍️ Peer saved ${emoji.name} <-> ${role.name}\nIf you have finished enter \`stop\`\nEnter \`cancel\` for exit autorole`,
+              description: `🛍️ Peer saved ${emoji.name} <-> ${role.name}\nIf you have finished enter \`stop\`\nEnter \`cancel\` for exit reactionrole`,
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -200,7 +200,7 @@ class ReactionRole extends Commands {
         return message.channel.createMessage({
           data: {
             embed: {
-              description: 'Autorole cancelled',
+              description: 'reactionrole cancelled',
               color: parseInt('0x' + message.db.user.color) + 0x00,
             },
           },
@@ -210,7 +210,7 @@ class ReactionRole extends Commands {
       message.channel.createMessage({
         data: {
           embed: {
-            description: '🎀 Autorole created !',
+            description: '🎀 reactionrole created !',
             color: parseInt('0x' + message.db.user.color) + 0x00,
           },
         },
@@ -232,7 +232,7 @@ class ReactionRole extends Commands {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       };
 
-      await mongoose.model('Autorole').create({
+      await mongoose.model('Reactionrole').create({
         messageID: pos.message,
         channelID: pos.channel,
         link: [
