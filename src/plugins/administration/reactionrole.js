@@ -2,13 +2,13 @@
 
 const BitField = require('../../util/BitField');
 const {parseMention} = require('../../util/Util');
-const Commands = require('./../../structures/Commands');
+const Commands = require('../../structures/Commands');
 const emojiRegex = require('emoji-regex');
 const mongoose = require('mongoose');
 
-class Autorole extends Commands {
+class ReactionRole extends Commands {
   constructor(client) {
-    super(client, 'autorole', {
+    super(client, 'reactionrole', {
       memberPermissions: [],
       mePermissions: ['SEND_MESSAGES', 'EMBED_LINKS', 'ADD_REACTIONS', 'MANAGE_ROLES'],
     });
@@ -249,4 +249,4 @@ class Autorole extends Commands {
   };
 };
 
-module.exports = exports = Autorole;
+module.exports = exports = ReactionRole;
