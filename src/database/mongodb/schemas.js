@@ -106,7 +106,13 @@ module.exports.Autorole = exports.Autorole = new mongoose.Schema({
     index: true,
     unique: true,
   },
+  channelID: {
+    type: String,
+    required: true,
+    index: true,
+    unique: false,
+  },
   link: {
-    type: Object,
+    type: Array,
   },
 });

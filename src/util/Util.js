@@ -66,6 +66,10 @@ class Util {
     return Util.computeOverwrites(basePermissions, member, guild, channel);
   };
 
+  /**
+   * @param {string | string{}} str
+   * @return {{nickname: string, channel: string, username: string, role: string, emoji; string}}
+   */
   static parseMention(str) {
     if (!str) return null;
     if (Array.isArray(str)) str = str.join('');

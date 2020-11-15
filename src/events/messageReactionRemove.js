@@ -6,6 +6,7 @@ const BitField = require('../util/BitField');
 const {flags: {PLUGINS, PERMISSION}} = require('./../util/Constant');
 const {ChannelNode} = require('kobu-lib');
 const {computeBasePermissions} = require('../util/Util');
+const {GuildNode} = require('kobu-lib');
 
 class MessageReactionRemove extends Events{
   constructor(client) {
@@ -15,7 +16,13 @@ class MessageReactionRemove extends Events{
   };
 
   async handle(reaction) {    
-    if (reaction.emoji.name != this.stars[0]) return;
+    if (reaction.emoji.name != this.stars[0]) {
+      const autorole = await mongoose.model('Autorole').findOne({messageID: reaction.message_id}, ['link']);
+      if (!autorole) return;
+      const peer = autorole.link.find((link) => link[0].name == reaction.emoji.name);
+
+      return await new GuildNode(this.client, reaction.guild_id).removeMemberRole(reaction.user_id, peer[1].id)
+    };
 
     const dbGuild = await mongoose.model('Guilds').findOne({id: reaction.guild_id}, ['plugins', 'starboard']);
     const bitfield = new BitField(dbGuild.plugins, PLUGINS);

@@ -18,12 +18,12 @@ class Collector extends EventEmitter {
 
     this.options = {timeout, filter};
 
-    this.collected = new Collection();
+    this.collected = [];
 
     this.client.setTimeout(this.uuid, () => {
       this.emit('end', 'TIMEOUT', this.collected);
       console.log('end');
-      this.client.collectors.remove(this.uuid);
+      this.client.collectors.delete(this.uuid);
     }, this.options.timeout);
   };
 
@@ -33,6 +33,8 @@ class Collector extends EventEmitter {
 
   exec(data) {
     if (!this.filter(data)) return;
+
+    this.collected.push(data);
 
     this.emit('collector', data);
   };
@@ -44,6 +46,7 @@ class Collector extends EventEmitter {
    */
   stop(reason) {
     this.client.clearTimeout(this.uuid);
+    this.client.collectors.delete(this.uuid);
     this.emit('end', reason, this.collected);
   };
 };

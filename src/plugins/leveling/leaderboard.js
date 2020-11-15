@@ -37,7 +37,7 @@ class Leaderboard extends Commands {
 
     message.channel.createMessage({
       data: {
-        embed: embed
+        embed: embed,
       },
     });
   };

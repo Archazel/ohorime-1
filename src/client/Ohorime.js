@@ -134,7 +134,7 @@ class Ohorime extends Client {
   };
 
   clearTimeout(name) {
-    this.timeouts.remove(name);
+    this.timeouts.delete(name);
   };
 };
 
