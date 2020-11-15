@@ -14,7 +14,6 @@ class Message extends Events {
   };
 
   async handle(message) {
-    console.log(message);
     // Collector broadcast
     for (const collector of this.client.collectors
       .array().filter((br) => br.channel == message.channel_id)) {
@@ -28,8 +27,6 @@ class Message extends Events {
       this.client.collectors.set(collector.uuid, collector);
       return collector;
     };
-
-    console.log('d');
 
     if (message.author.bot || message.bitfield.has('URGENT')) return;
 

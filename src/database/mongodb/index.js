@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 const schemas = require('./schemas');
 const os = require('os');
 const {spawn, exec} = require('child_process');
-const path = require('path');
 const {EventEmitter} = require('events');
 
 class MongoDB extends EventEmitter{
-  constructor(client) {
+  constructor(client, uri) {
     super();
 
     this.client = client;
+    this.uri = uri;
 
     mongoose.set('useFindAndModify', true);
 
@@ -23,7 +23,7 @@ class MongoDB extends EventEmitter{
   };
 
   get start() {
-    mongoose.connect('mongodb://localhost:27017/ohorime', {
+    mongoose.connect(this.uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -46,7 +46,9 @@ class MongoDB extends EventEmitter{
     this.start;
 
     mongoose.connection.on('error', async () => {
-      console.log('[*] Mongodb connection error (%s)', 'mongodb://localhost:27017/ohorime');
+      console.log('[*] Mongodb connection error (%s)', this.uri);
+      if (process.env.NODE_ENV == 'production') return;
+
       if (os.platform() == 'linux') {
         console.log('[*] Launch mongodb server');
 

@@ -3,7 +3,6 @@
 const _Redis = require('ioredis');
 const os = require('os');
 const {spawn, exec} = require('child_process');
-const path = require('path');
 const {EventEmitter} = require('events');
 
 class Redis extends EventEmitter {
@@ -43,6 +42,8 @@ class Redis extends EventEmitter {
     this.socket.on('error', async () => {
       this.socket.disconnect();
       console.log('[*] Redis connection error (%s:%s)', this.options?.host, this.options?.port);
+
+      if (process.env.NODE_ENV == 'production') return;
 
       if (os.platform() == 'win32' && !this.stated) {
         console.log('[*] Launch redis server');
