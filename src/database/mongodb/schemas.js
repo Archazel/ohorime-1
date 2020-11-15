@@ -49,18 +49,32 @@ module.exports.Users = exports.Users = new mongoose.Schema({
 });
 
 module.exports.Leveling = exports.Leveling = new mongoose.Schema({
-  id: {
+  guildID: {
     type: String,
     required: true,
     index: true,
-    unique: true,
+    unique: false,
   },
-  members: {
+  userID: {
+    type: Object,
+    required: true,
+    index: true,
+    unique: false,
+  },
+  messages: {
+    type: Number,
+    default: 0,
+  },
+  voice: {
+    type: Number,
+    default: 0,
+  },
+  channels: {
     type: Object,
   },
-  createdAt: {
-    type: String,
-    defautl: Date.now(),
+  actif: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -82,5 +96,17 @@ module.exports.Starboard = exports.Starboard = new mongoose.Schema({
     required: true,
     index: true,
     unique: false,
+  },
+});
+
+module.exports.Autorole = exports.Autorole = new mongoose.Schema({
+  messageID: {
+    type: String,
+    required: true,
+    index: true,
+    unique: true,
+  },
+  link: {
+    type: Object,
   },
 });

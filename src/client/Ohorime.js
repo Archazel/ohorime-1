@@ -37,6 +37,9 @@ class Ohorime extends Client {
     this.yokoso = axios.create({
       baseURL: 'htts://yokoso.ohori.me/images/',
     });
+
+    this.collectors = new Collection();
+    this.timeouts = new Collection();
   };
 
   loadPlugins(path) {
@@ -116,7 +119,7 @@ class Ohorime extends Client {
     this.mongoDB.connect().then(() => {
       console.log('[*] Connected to mongoDB');
       this.redis.connect();
-      this.redis.socket.once('connect', () => {
+      this.redis.once('co', () => {
         console.log('[*] Connected to redis');
         this.connect(token);
       });
@@ -124,6 +127,14 @@ class Ohorime extends Client {
       console.log(e);
       throw Error('Connection impossible to mongoDB');
     });
+  };
+
+  setTimeout(name, fn, time) {
+    this.timeouts.set(name, setTimeout(() => fn, time));
+  };
+
+  clearTimeout(name) {
+    this.timeouts.remove(name);
   };
 };
 

@@ -6,6 +6,7 @@ const BitField = require('../util/BitField');
 const {ChannelNode} = require('kobu-lib');
 const {flags: {PERMISSION, MESSAGE, PLUGINS}} = require('./../util/Constant');
 const {computePermissions} = require('./../util/Util');
+const Collector = require('../util/Collector');
 
 class Message extends Events {
   constructor(client) {
@@ -13,7 +14,19 @@ class Message extends Events {
   };
 
   async handle(message) {
+    // Collector broadcast
+    for (const collector of this.client.collectors
+      .array().filter((br) => br.channel == message.channel_id)) {
+        if (collector.filter(message)) return collector.exec(message);
+    };
+
     message.bitfield = new BitField(message.flags, MESSAGE);
+
+    message.createCollector = (timeout, filter) => {
+      const collector = new Collector(this.client, {message: message.id, channel: message.channel_id}, {timeout, filter});
+      this.client.collectors.set(collector.uuid, collector);
+      return collector;
+    };
 
     if (message.author.bot || message.bitfield.has('URGENT')) return;
 
@@ -54,19 +67,22 @@ class Message extends Events {
 
     if (message.db.guild.bitfield.has('LEVELING')) {
       await new Promise((resolve) => {
-        mongoose.model('Leveling').exists({id: message.guild_id}, async (err, exist) => {
+        mongoose.model('Leveling').exists({guildID: message.guild_id, userID: message.author.id}, async (err, exist) => {
           if (exist) {
-            await mongoose.model('Leveling').findOneAndUpdate({id: message.guild_id}, {
+            await mongoose.model('Leveling').findOneAndUpdate({guildID: message.guild_id, userID: message.author.id}, {
               $inc: {
-                [`members.${message.author.id}`]: 1,
+                messages: 1,
+                [`channels.${message.channel_id}`]: 1,
               },        
             });
             resolve();
           } else {
             await mongoose.model('Leveling').create({
-              id: message.guild_id,
-              members: {
-                [message.author.id]: 0,
+              guildID: message.guild_id,
+              userID: message.author.id,
+              messages: 1,
+              channels: {
+                [message.channel_id]: 1,
               },
             });
             resolve();

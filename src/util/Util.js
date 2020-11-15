@@ -122,6 +122,19 @@ class Util {
     else if (num < 1000000000000 && num > 999999999) return `${Util.removeEnd(String(num), 9)}B`;
     else `${Util.removeEnd(String(num), 12)}`;
   };
+
+  static createUUID() {
+    const schema = [8, 4, 4, 4, 12];
+    let content = 'abcdefghijklmopqrstuvwxyz0123456789';
+    let uuid = '';
+    for (const lgt of schema) {
+      uuid += '-';
+      for (let i = 0; i < lgt; i++) {
+        uuid += content[Math.floor(Math.random() * content.length)];
+      };
+    };
+    return uuid.slice(1);
+  };
 };
 
 module.exports = exports = Util;

@@ -19,20 +19,11 @@ class GuildCreate extends Events{
       },
     }));
 
-    mongoose.model('Guilds').findOne({id: guild.id}, (err, _guild) => {
-      if (Boolean(_guild)) return;
+    mongoose.model('Guilds').exists({id: guild.id}, (err, exist) => {
+      if (err) throw Error(err);
+      if (exist) return;
       mongoose.model('Guilds').create({
         id: guild.id,
-      });
-    });
-
-    Object.values(guild.members).filter((member) => !member.user.bot).forEach(async (member) => {
-
-      mongoose.model('Users').findOne({id: member.user.id}, (err, user) => {
-        if (user) return;
-        mongoose.model('Users').create({
-          id: member.user.id,
-        });
       });
     });
 

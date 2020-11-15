@@ -1,6 +1,7 @@
 'use strict';
 
 const Events = require('./../structures/Events');
+const mongoose = require('mongoose');
 
 class GuildMemberChunk extends Events{
   constructor(client) {
@@ -16,6 +17,16 @@ class GuildMemberChunk extends Events{
       };
     };
 
+    Object.values(chunk.members).filter((member) => !member.user.bot).forEach(async (member) => {
+
+      mongoose.model('Users').exists({id: member.user.id}, (err, exist) => {
+        if (exist) return;
+        mongoose.model('Users').create({
+          id: member.user.id,
+        });
+      });
+    });
+
     this.client.redis.socket.set(`guild_${chunk.guild_id}`, JSON.stringify(guild));
 
     if (chunk.chunk_count <= chunk.chunk_index) {
@@ -28,6 +39,16 @@ class GuildMemberChunk extends Events{
           user_ids: chunk.members.pop()?.user?.id,
         },
       }));
+    } else {
+      mongoose.model('Leveling').find({id: guild.id}, ['userID'], (err, lvl) => {
+        for (const {userID: id} of lvl) {
+          if (!Boolean(guild.members.find((member) => member.user.id) == id)) {
+            lvl.updateOne({
+              actif: false,
+            });
+          };
+        };
+      });
     };
   };
 };
