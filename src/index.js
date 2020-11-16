@@ -6,4 +6,4 @@ const client = new Ohorime();
 client.loadEvents('./src/events');
 client.loadPlugins('./src/plugins');
 
-client.start(require('./../config').token);
+client.start(process.env.DISCORD_TOKEN);

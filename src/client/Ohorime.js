@@ -9,7 +9,6 @@ const {resolve} = require('path');
 const Collection = require('@discordjs/collection');
 const axios = require('axios');
 const yaml = require('yaml');
-const config = require('./../../config');
 
 class Ohorime extends Client {
   constructor() {
@@ -28,11 +27,15 @@ class Ohorime extends Client {
 
     this.plugins = new Collection();
 
-    console.log(config);
+    this.mongoDB = new MongoDB(this, process.env.MONGO_URI);
 
-    this.mongoDB = new MongoDB(this, config.mongodb);
-
-    this.redis = new Redis(this, config.redis);
+    this.redis = new Redis(this, {
+      port: process.env.REDIS_PORT,
+      host: process.env.REDIS_HOST,
+      family: process.env.REDIS_PASSWORD,
+      password: process.env.REDIS_FAMILY,
+      db: process.env.REDIS_DB,
+    });
 
     this.shard;
     this.application;

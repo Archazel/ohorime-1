@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 config.js
-dump.rdb
 src/lib/redis/unix/redis-*/
+*.swp

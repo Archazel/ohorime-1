@@ -1,11 +1,15 @@
 FROM node:14
 
-WORKDIR /usr/src/app
+LABEL maintainer "shaynlink"
 
-COPY package.json ./
+WORKDIR /usr/src/ohorime
+
+COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-EXPOSE 3000
+
+ENV NODE_ENV production
+
 
 CMD [ "npm", "run", "start" ]

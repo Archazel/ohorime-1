@@ -1,0 +1,7 @@
+version: '3'
+services:
+  ohorime:
+    build: .
+    restart: always
+    environment:
+      - NODE_ENV=production
