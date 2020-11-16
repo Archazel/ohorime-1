@@ -32,8 +32,8 @@ class Ohorime extends Client {
     this.redis = new Redis(this, {
       port: process.env.REDIS_PORT,
       host: process.env.REDIS_HOST,
-      family: process.env.REDIS_PASSWORD,
-      password: process.env.REDIS_FAMILY,
+      password: process.env.REDIS_PASSWORD,
+      family: process.env.REDIS_FAMILY,
       db: process.env.REDIS_DB,
     });
 
