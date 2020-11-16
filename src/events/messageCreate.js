@@ -91,7 +91,6 @@ class Message extends Events {
       });
     };
 
-    console.log(message.db.user);
     if (!message.me.bitfield.has('SEND_MESSAGES')) return;
 
     if (!message.content.startsWith(message.db.user.prefix)) return;

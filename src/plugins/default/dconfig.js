@@ -234,7 +234,7 @@ class Config extends Commands {
 
       if (args.join('') != 'reset') {
         // Check permissions
-        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel), PERMISSION);
+        const permissions = new BitField(computePermissions(message.me, message.guild, argChannel), PERMISSION);
 
         if (!permissions.has('SEND_MESSAGES')) return message.channel.createMessage({
           data: {
@@ -334,7 +334,7 @@ class Config extends Commands {
 
       if (args.join('') != 'reset') {
         // Check permissions
-        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel), PERMISSION);
+        const permissions = new BitField(computePermissions(message.me, message.guild, argChannel), PERMISSION);
 
         if (!permissions.has('SEND_MESSAGES')) return message.channel.createMessage({
           data: {
@@ -414,7 +414,7 @@ class Config extends Commands {
 
       if (args.join('') != 'reset') {
         // Check permissions
-        const permissions = new BitField(computePermissions(message.member, message.guild, argChannel), PERMISSION);
+        const permissions = new BitField(computePermissions(message.me, message.guild, argChannel), PERMISSION);
 
         if (!permissions.has('SEND_MESSAGES')) return message.channel.createMessage({
           data: {
@@ -430,8 +430,6 @@ class Config extends Commands {
         if (!bitfield.has(PLUGINS.GOODBYE)) {
           bitfield.add(bitfield.flags.GOODBYE);
         };
-
-        console.log(argChannel);
 
         return await mongoose.model('Guilds').findOneAndUpdate({
           id: message.db.guild.id,
