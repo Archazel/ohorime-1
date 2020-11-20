@@ -110,15 +110,19 @@ $ npm run pm2:restart # Restart bot
 $ npm run pm2:log # Show log
 ```
 
-With Coogle Cloud Run (You must create a server) **not recommended**
-replace <YOUR_GOOGLE_CLOUD_PROJECT_ID> with your google cloud project id
+**not recommended**
+
+With Coogle Cloud Run (You must create a server)
+
 ```sh
 $ gcloud builds submit --tag gcr.io/<YOUR_GOOGLE_CLOUD_PROJECT_ID>/ohorime:1.0.0 .
 
 $ gcloud run deploy --image=gcr.io/<YOUR_GOOGLE_CLOUD_PROJECT_ID>/ohorime:1.0.0 --platform managed --port 3000
 ```
 
-With Google App Engine **not recommended** replace <YOUR_GOOGLE_CLOUD_PROJECT_ID> with your google cloud project id
+**not recommended**
+
+With Google App Engine
 ```sh
 $ gcloud app deploy app.yaml --project <project-id>
 ```
