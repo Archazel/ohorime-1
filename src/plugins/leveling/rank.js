@@ -21,7 +21,7 @@ class Rank extends Commands {
   async handle(message, args) {
     const leveling = await mongoose.model('Leveling').findOne({guildID: message.guild_id, userID: message.author.id}, ['messages']);
     const background = await resolveImage(path.resolve(path.join(__dirname, '/background.jpg')));
-    const pp = await loadImage(`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`);
+    const pp = await loadImage(`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.includes("a_") ? "gif" : "png"}`);
     const level = calculator(leveling.messages);
     
     const resolution = [16, 6];
