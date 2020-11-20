@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index.js",
-    "start": "cross-env NODE_ENV=production node index.js"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "pm2:start": "pm2 start",
+    "pm2:stop": "pm2 stop ohorime",
+    "pm2:delete": "pm2 delete ohorime",
+    "pm2:restart": "pm2 restart ohorime",
+    "pm2:log": "pm2 log ohorime"
   },
   "author": "shaynlink <me@shaynlink.fr> (https://ohori.me)",
   "license": "MIT",
@@ -26,6 +30,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "pm2": "^4.5.0"
   }
 }
