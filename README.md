@@ -35,13 +35,13 @@ Created by [Shaynlink](https://github.com/shaynlink) - [Shaynlink's server](http
 ## Features
 
 ### Welcome
-https://aw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_welcome.png
+https://raw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_welcome.png
 ### Goodbye
-https://aw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_goodbye.png
+https://raw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_goodbye.png
 ### Rank
-https://aw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_rank.png
+https://raw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_rank.png
 ### Starboard
-https://aw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_starboard.png
+https://raw.githubusercontent.com/Ohorime/ohorime/tree/master/assets/images/features_starboard.png
 # Installation
 
 with npm
