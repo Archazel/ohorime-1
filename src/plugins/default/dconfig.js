@@ -351,8 +351,6 @@ class Config extends Commands {
           bitfield.add(bitfield.flags.WELCOME);
         };
 
-        console.log(argChannel);
-
         return await mongoose.model('Guilds').findOneAndUpdate({
           id: message.db.guild.id,
         }, {

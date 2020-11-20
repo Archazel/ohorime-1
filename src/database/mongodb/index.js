@@ -13,8 +13,6 @@ class MongoDB extends EventEmitter{
     this.client = client;
     this.uri = uri;
 
-    mongoose.set('useFindAndModify', true);
-
     for (const [name, schema] of Object.entries(schemas)) {
       try {
         mongoose.model(name, schema);
@@ -27,7 +25,7 @@ class MongoDB extends EventEmitter{
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: true
+      useFindAndModify: false
     }).catch(() => {
       mongoose.connection.emit('error');
     });
